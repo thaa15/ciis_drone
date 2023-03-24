@@ -6,15 +6,17 @@ import numpy as np
 from scipy.stats import zscore
 from sklearn.preprocessing import MinMaxScaler
 import tensorflow as tf
+import os
 
+np.seterr(divide='ignore', invalid='ignore')
 max = np.zeros(4);min = np.zeros(4);count=1;T=3
 IV1 = [];IV2 = [];IV3 = [];IV4 = [];IV5 = []
 
 def att_command():
     global max, min
-    data_pwm = pd.read_csv("./Data Terbang/data/04_40_31_actuator_outputs_0.csv")
-    data_attitude_input = pd.read_csv("./Data Terbang/data/04_40_31_vehicle_rates_setpoint_0.csv")
-    data_position_input = pd.read_csv("./Data Terbang/data/04_40_31_vehicle_local_position_0.csv")
+    data_pwm = pd.read_csv("~/skripsi2023_ws/src/ciis_drone/Data Terbang/data/04_40_31_actuator_outputs_0.csv")
+    data_attitude_input = pd.read_csv("~/skripsi2023_ws/src/ciis_drone/Data Terbang/data/04_40_31_vehicle_rates_setpoint_0.csv")
+    data_position_input = pd.read_csv("~/skripsi2023_ws/src/ciis_drone/Data Terbang/data/04_40_31_vehicle_local_position_0.csv")
 
     ## DATA PWM 4 MOTOR
     pwm_0 = np.array(data_pwm['output[0]'])
@@ -89,68 +91,70 @@ def att_command():
     return [roll, pitch, yawCos, yawSin, speed,pwm_0,pwm_1,pwm_2,pwm_3]
 
 def model():
-    NN1 = tf.keras.models.load_model('Model/NN1.h5')
-    NN2 = tf.keras.models.load_model('Model/NN2.h5')
-    NN3 = tf.keras.models.load_model('Model/NN3.h5')
-    NN4 = tf.keras.models.load_model('Model/NN4.h5')
-    NN5 = tf.keras.models.load_model('Model/NN5.h5')
-    NN6 = tf.keras.models.load_model('Model/NN6.h5')
+    # rospy.loginfo(os.getcwd())
+    NN1 = tf.keras.models.load_model('/home/ciis-ftui/skripsi2023_ws/src/ciis_drone/Model/NN1.h5')
+    NN2 = tf.keras.models.load_model('/home/ciis-ftui/skripsi2023_ws/src/ciis_drone/Model/NN2.h5')
+    NN3 = tf.keras.models.load_model('/home/ciis-ftui/skripsi2023_ws/src/ciis_drone/Model/NN3.h5')
+    NN4 = tf.keras.models.load_model('/home/ciis-ftui/skripsi2023_ws/src/ciis_drone/Model/NN4.h5')
+    NN5 = tf.keras.models.load_model('/home/ciis-ftui/skripsi2023_ws/src/ciis_drone/Model/NN5.h5')
+    NN6 = tf.keras.models.load_model('/home/ciis-ftui/skripsi2023_ws/src/ciis_drone/Model/NN6.h5')
     return [NN1,NN2,NN3,NN4,NN5,NN6]
 
 def pwm_sender():
+    global count
     rospy.init_node('model_node', anonymous=True)
     pub = rospy.Publisher('pwm', Motor, queue_size=10)
     mtr = Motor()
     database = att_command()
     pwm0_NN1 = np.zeros(len(database[5]))
     pwm1_NN1 = np.zeros(len(database[6]))
-    pwm2_NN1 = np.zeros(len(database[8]))
-    pwm3_NN1 = np.zeros(len(database[9]))
+    pwm2_NN1 = np.zeros(len(database[7]))
+    pwm3_NN1 = np.zeros(len(database[8]))
     pwm0_NN2 = np.zeros(len(database[5]))
     pwm1_NN2 = np.zeros(len(database[6]))
-    pwm2_NN2 = np.zeros(len(database[8]))
-    pwm3_NN2 = np.zeros(len(database[9]))
+    pwm2_NN2 = np.zeros(len(database[7]))
+    pwm3_NN2 = np.zeros(len(database[8]))
     pwm0_NN3 = np.zeros(len(database[5]))
     pwm1_NN3 = np.zeros(len(database[6]))
-    pwm2_NN3 = np.zeros(len(database[8]))
-    pwm3_NN3 = np.zeros(len(database[9]))
+    pwm2_NN3 = np.zeros(len(database[7]))
+    pwm3_NN3 = np.zeros(len(database[8]))
     pwm0_NN4 = np.zeros(len(database[5]))
     pwm1_NN4 = np.zeros(len(database[6]))
-    pwm2_NN4 = np.zeros(len(database[8]))
-    pwm3_NN4 = np.zeros(len(database[9]))
+    pwm2_NN4 = np.zeros(len(database[7]))
+    pwm3_NN4 = np.zeros(len(database[8]))
     pwm0_NN5 = np.zeros(len(database[5]))
     pwm1_NN5 = np.zeros(len(database[6]))
-    pwm2_NN5 = np.zeros(len(database[8]))
-    pwm3_NN5 = np.zeros(len(database[9]))
+    pwm2_NN5 = np.zeros(len(database[7]))
+    pwm3_NN5 = np.zeros(len(database[8]))
 
     pwm0_NN1[:4] = np.append([0],database[5][:3])
     pwm1_NN1[:4] = np.append([0],database[6][:3])
-    pwm2_NN1[:4] = np.append([0],database[8][:3])
-    pwm3_NN1[:4] = np.append([0],database[9][:3])
+    pwm2_NN1[:4] = np.append([0],database[7][:3])
+    pwm3_NN1[:4] = np.append([0],database[8][:3])
     roll_NN1 = database[0].flatten()
 
     pwm0_NN2[:4] = np.append([0],database[5][:3])
     pwm1_NN2[:4] = np.append([0],database[6][:3])
-    pwm2_NN2[:4] = np.append([0],database[8][:3])
-    pwm3_NN2[:4] = np.append([0],database[9][:3])
+    pwm2_NN2[:4] = np.append([0],database[7][:3])
+    pwm3_NN2[:4] = np.append([0],database[8][:3])
     pitch_NN2 = database[1].flatten()
 
     pwm0_NN3[:4] = np.append([0],database[5][:3])
     pwm1_NN3[:4] = np.append([0],database[6][:3])
-    pwm2_NN3[:4] = np.append([0],database[8][:3])
-    pwm3_NN3[:4] = np.append([0],database[9][:3])
+    pwm2_NN3[:4] = np.append([0],database[7][:3])
+    pwm3_NN3[:4] = np.append([0],database[8][:3])
     yawCos_NN3 = database[2].flatten()
 
     pwm0_NN4[:4] = np.append([0],database[5][:3])
     pwm1_NN4[:4] = np.append([0],database[6][:3])
-    pwm2_NN4[:4] = np.append([0],database[8][:3])
-    pwm3_NN4[:4] = np.append([0],database[9][:3])
+    pwm2_NN4[:4] = np.append([0],database[7][:3])
+    pwm3_NN4[:4] = np.append([0],database[8][:3])
     yawSin_NN4 = database[3].flatten()
 
     pwm0_NN5[:4] = np.append([0],database[5][:3])
     pwm1_NN5[:4] = np.append([0],database[6][:3])
-    pwm2_NN5[:4] = np.append([0],database[8][:3])
-    pwm3_NN5[:4] = np.append([0],database[9][:3])
+    pwm2_NN5[:4] = np.append([0],database[7][:3])
+    pwm3_NN5[:4] = np.append([0],database[8][:3])
     speed_NN5 = database[4].flatten()
     models = model()
     rate = rospy.Rate(75)
