@@ -7,10 +7,15 @@ from scipy.stats import zscore
 from sklearn.preprocessing import MinMaxScaler
 import tensorflow as tf
 import os
+import serial
+import time
 
 np.seterr(divide='ignore', invalid='ignore')
 max = np.zeros(4);min = np.zeros(4);count=1;T=3
 IV1 = [];IV2 = [];IV3 = [];IV4 = [];IV5 = []
+esp32 = serial.Serial('/dev/ttyUSB0', 115200, timeout=1000)
+startMarker = '<'
+endMarker = '>'
 
 def att_command():
     global max, min

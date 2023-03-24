@@ -4,7 +4,7 @@
 	<rosparam param="mavros/system_id">1</rosparam>
 	<rosparam param="mavros/component_id">240</rosparam>
 	
-	<rosparam param="mavros/fcu_url">/dev/ttyTHS0:115200</rosparam>
+	<rosparam param="mavros/fcu_url">/dev/ttyACM0:115200</rosparam>
 	
 	<!-- <rosparam param="mavros/fcu_url">"udp://127.0.0.1:14551@14555"</rosparam> -->
 	<!-- This node will run  run.cpp and server.py -->
