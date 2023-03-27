@@ -8,7 +8,7 @@
 	
 	<!-- <rosparam param="mavros/fcu_url">"udp://127.0.0.1:14551@14555"</rosparam> -->
 	<!-- This node will run  run.cpp and server.py -->
-	<node name="drone_node" pkg="ciis_drone" type="drone_node" output="screen" />
+	<!-- <node name="drone_node" pkg="ciis_drone" type="drone_node" output="screen" /> -->
 	<!-- add delay waiting server to turn on -->
 	
 	<arg name="node_start_delay" default="30.0" />
