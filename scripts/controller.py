@@ -13,7 +13,8 @@ import time
 np.seterr(divide='ignore', invalid='ignore')
 maxz = np.zeros(4);minz = np.zeros(4);count=1
 IV1 = [];IV2 = [];IV3 = [];IV4 = [];IV5 = []
-tf.config.list_physical_devices('GPU')
+physical_devices = tf.config.list_physical_devices('GPU')
+tf.config.experimental.set_memory_growth(physical_devices[0], enable=True)
 esp32 = serial.Serial('/dev/ttyUSB0', 115200, timeout=1000)
 
 def pwm_sender():
