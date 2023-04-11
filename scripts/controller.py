@@ -182,11 +182,11 @@ def pwm_sender():
                 x_IV4 = np.asarray(x_IV4,dtype='float64')
                 x_IV5 = np.asarray(x_IV5,dtype='float64')
 
-                pred1 = NN1.predict(x=[x_IV1])
-                pred2 = NN2.predict(x=[x_IV2])
-                pred3 = NN3.predict(x=[x_IV3])
-                pred4 = NN4.predict(x=[x_IV4])
-                pred5 = NN5.predict(x=[x_IV5])
+                pred1 = NN1.predict(x=[x_IV1],verbose=0)
+                pred2 = NN2.predict(x=[x_IV2],verbose=0)
+                pred3 = NN3.predict(x=[x_IV3],verbose=0)
+                pred4 = NN4.predict(x=[x_IV4],verbose=0)
+                pred5 = NN5.predict(x=[x_IV5],verbose=0)
 
                 pwm0_NN1[counter+3] = pred1[:,0][0]
                 pwm1_NN1[counter+3] = pred1[:,1][0]
@@ -234,7 +234,7 @@ def pwm_sender():
                 x_NN[:,17] = pwm1_NN5[counter]
                 x_NN[:,18] = pwm2_NN5[counter]
                 x_NN[:,19] = pwm3_NN5[counter]
-                pred_NN = NN6.predict(x = [x_NN])
+                pred_NN = NN6.predict(x = [x_NN],verbose=0)
                 hasil_pwm1 = (pred_NN[:,0][0] + 1)*(maxz[0] - minz[0])/2 + minz[0]
                 hasil_pwm2 = (pred_NN[:,1][0] + 1)*(maxz[1] - minz[1])/2 + minz[1]
                 hasil_pwm3 = (pred_NN[:,2][0] + 1)*(maxz[2] - minz[2])/2 + minz[2]
@@ -244,13 +244,14 @@ def pwm_sender():
                 mtr.pwm3 = hasil_pwm3
                 mtr.pwm4 = hasil_pwm4
                 toSend = f"<{str(int(hasil_pwm1))},{str(int(hasil_pwm2))},{str(int(hasil_pwm3))},{str(int(hasil_pwm4))}>"
-                rospy.loginfo(toSend)
                 esp32.write(toSend.encode('utf-8'))
                 counter = counter + 1
             # rospy.loginfo(mtr)
             pub.publish(mtr)
             count = count + 1
         else:
+            toSend = f"<END>"
+            esp32.write(toSend.encode('utf-8'))
             mtr.flight = False
         # pub.publish(mtr)
         rate.sleep()
